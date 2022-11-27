@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useEffect } from 'react';
 import { CsrfToken } from '../types/types';
 
-export const getCsrfToken = (csrf: boolean) => {
+export const useCsrfToken = (csrf: boolean) => {
   useEffect(() => {
     (async () => {
       const res = await axios.get<CsrfToken>(
