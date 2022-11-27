@@ -3,10 +3,11 @@ import { QueryClient, useQueryClient } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import { useMutateAuth } from './useMutateAuth';
 
-export const useProcessAuth = () => {
+export const useProcessAuth = (): any => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [form, setForm] = useState({ email: '', password: '' });
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [isLogin, setIsLogin] = useState(true);
 
   const { loginMutation, registerMutation, logoutMutation } = useMutateAuth();
@@ -15,36 +16,45 @@ export const useProcessAuth = () => {
     e.preventDefault();
     if (isLogin) {
       loginMutation.mutate({
-        email: form.email,
-        password: form.password,
+        email: email,
+        password: password,
       });
     } else {
       await registerMutation
         .mutateAsync({
-          email: form.email,
-          password: form.password,
+          email: email,
+          password: password,
         })
         .then(() => {
           loginMutation.mutate({
-            email: form.email,
-            password: form.password,
+            email: email,
+            password: password,
           });
         })
         .catch(() => {
-          setForm({
-            email: '',
-            password: '',
-          });
+          setEmail('');
+          setPassword('');
         });
     }
+  };
 
-    const logout = async () => {
-      await logoutMutation.mutateAsync();
-      queryClient.removeQueries('tasks');
-      queryClient.removeQueries('user');
-      queryClient.removeQueries('single');
-      navigate('/');
-    };
-    return { form, setForm, isLogin, setIsLogin, processAuth, logout };
+  const logout = async () => {
+    await logoutMutation.mutateAsync();
+    queryClient.removeQueries('tasks');
+    queryClient.removeQueries('user');
+    queryClient.removeQueries('single');
+    navigate('/');
+  };
+  return {
+    email,
+    setEmail,
+    password,
+    setPassword,
+    isLogin,
+    setIsLogin,
+    processAuth,
+    logout,
+    loginMutation,
+    registerMutation,
   };
 };
