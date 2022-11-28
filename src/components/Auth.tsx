@@ -1,22 +1,20 @@
 import { useProcessAuth } from '../hooks/useProcessAuth';
 import { ArrowPathIcon, CheckBadgeIcon } from '@heroicons/react/24/solid';
+import { useState } from 'react';
 
 export const Auth = (): JSX.Element => {
-  const {
-    email,
-    setEmail,
-    password,
-    setPassword,
-    isLogin,
-    setIsLogin,
-    processAuth,
-    logout,
-    loginMutation,
-    registerMutation,
-  } = useProcessAuth();
+  const { login, register, isLoadingLogin, isLoadingRegister } =
+    useProcessAuth();
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLogin, setIsLogin] = useState(true);
+
+  const processAuth = isLogin ? login : register;
+
   return (
     <>
-      {loginMutation.isLoading || registerMutation.isLoading ? (
+      {isLoadingLogin || isLoadingRegister ? (
         <div className="flex justify-center items-center flex-col min-h-screen">
           <h1 className="text-xl text-gray-600 font-mono">Loading...</h1>
         </div>

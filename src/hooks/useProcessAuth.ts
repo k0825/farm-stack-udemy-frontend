@@ -1,41 +1,57 @@
 import { FormEvent, useState } from 'react';
-import { QueryClient, useQueryClient } from 'react-query';
+import { useQueryClient } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import { useMutateAuth } from './useMutateAuth';
 
-export const useProcessAuth = (): any => {
+interface useProcessAuthType {
+  login: (e: FormEvent<HTMLFormElement>) => void;
+  register: (e: FormEvent<HTMLFormElement>) => void;
+  logout: () => void;
+  isLoadingLogin: boolean;
+  isLoadingRegister: boolean;
+}
+
+export const useProcessAuth = (): useProcessAuthType => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isLogin, setIsLogin] = useState(true);
 
   const { loginMutation, registerMutation, logoutMutation } = useMutateAuth();
 
-  const processAuth = async (e: FormEvent<HTMLFormElement>) => {
+  const login = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (isLogin) {
-      loginMutation.mutate({
+
+    setEmail(e.currentTarget.email.value);
+    setPassword(e.currentTarget.password.value);
+
+    loginMutation.mutate({
+      email: email,
+      password: password,
+    });
+  };
+
+  const register = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    setEmail(e.currentTarget.email.value);
+    setPassword(e.currentTarget.password.value);
+
+    await registerMutation
+      .mutateAsync({
         email: email,
         password: password,
-      });
-    } else {
-      await registerMutation
-        .mutateAsync({
+      })
+      .then(() => {
+        loginMutation.mutate({
           email: email,
           password: password,
-        })
-        .then(() => {
-          loginMutation.mutate({
-            email: email,
-            password: password,
-          });
-        })
-        .catch(() => {
-          setEmail('');
-          setPassword('');
         });
-    }
+      })
+      .catch(() => {
+        setEmail('');
+        setPassword('');
+      });
   };
 
   const logout = async () => {
@@ -45,16 +61,12 @@ export const useProcessAuth = (): any => {
     queryClient.removeQueries('single');
     navigate('/');
   };
+
   return {
-    email,
-    setEmail,
-    password,
-    setPassword,
-    isLogin,
-    setIsLogin,
-    processAuth,
+    login,
+    register,
     logout,
-    loginMutation,
-    registerMutation,
+    isLoadingLogin: loginMutation.isLoading,
+    isLoadingRegister: registerMutation.isLoading,
   };
 };
