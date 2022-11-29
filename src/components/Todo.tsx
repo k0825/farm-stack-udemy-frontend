@@ -1,8 +1,13 @@
 import { ArrowRightOnRectangleIcon } from '@heroicons/react/24/solid';
 import { useProcessAuth } from '../hooks/useProcessAuth';
+import { useQueryTasks } from '../hooks/useQueryTasks';
+import { useQueryUser } from '../hooks/useQueryUser';
 
 export const Todo = () => {
   const { logout } = useProcessAuth();
+
+  const { data: dataUser } = useQueryUser();
+  const { data: dataTasks, isLoading: isLoadingTasks } = useQueryTasks();
 
   return (
     <div className="flex justify-center items-center flex-col min-h-screen text-gray-600 font-mono">
