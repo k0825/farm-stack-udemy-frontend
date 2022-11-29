@@ -10,8 +10,6 @@ export const Auth = (): JSX.Element => {
   const [password, setPassword] = useState('');
   const [isLogin, setIsLogin] = useState(true);
 
-  const processAuth = isLogin ? login : register;
-
   return (
     <>
       {isLoadingLogin || isLoadingRegister ? (
@@ -27,7 +25,7 @@ export const Auth = (): JSX.Element => {
             </span>
           </div>
           <h2 className="my-6">{isLogin ? 'Login' : 'Create a new account'}</h2>
-          <form onSubmit={processAuth}>
+          <form onSubmit={isLogin ? login : register}>
             <div>
               <input
                 className="mb-3 px-3 text-sm py-2 border border-gray-300"

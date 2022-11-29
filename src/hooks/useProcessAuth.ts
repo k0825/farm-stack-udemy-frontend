@@ -14,43 +14,29 @@ interface useProcessAuthType {
 export const useProcessAuth = (): useProcessAuthType => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
 
   const { loginMutation, registerMutation, logoutMutation } = useMutateAuth();
 
   const login = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    setEmail(e.currentTarget.email.value);
-    setPassword(e.currentTarget.password.value);
-
     loginMutation.mutate({
-      email: email,
-      password: password,
+      email: e.currentTarget.email.value,
+      password: e.currentTarget.password.value,
     });
   };
 
   const register = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    setEmail(e.currentTarget.email.value);
-    setPassword(e.currentTarget.password.value);
-
     await registerMutation
       .mutateAsync({
-        email: email,
-        password: password,
+        email: e.currentTarget.email.value,
+        password: e.currentTarget.password.value,
       })
       .then(() => {
         loginMutation.mutate({
-          email: email,
-          password: password,
+          email: e.currentTarget.email.value,
+          password: e.currentTarget.password.value,
         });
-      })
-      .catch(() => {
-        setEmail('');
-        setPassword('');
       });
   };
 
