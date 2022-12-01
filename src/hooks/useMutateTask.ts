@@ -37,5 +37,49 @@ export const useMutateTask = () => {
     }
   );
 
+  const updateTaskMutation = useMutation(
+    (task: Task) =>
+      axios.put<Task>(
+        `${process.env.REACT_APP_API_URL}/todo/${task.id}`,
+        {
+          title: task.title,
+          description: task.description,
+        },
+        {
+          withCredentials: true,
+        }
+      ),
+    {
+      onSuccess: (res, variables) => {
+        const previousTodos = queryClient.getQueryData<Task[]>('tasks');
+        if (previousTodos) {
+          queryClient.setQueryData(
+            'tasks',
+            previousTodos.map((task) => {
+              task.id === variables.id ? res.data : task;
+            })
+          );
+        }
+      },
+      onError: (err: any) => {
+        alert(`${err.response.data.detail}\n${err.message}`);
+        if (
+          err.response.data.detail === 'The JWT has expired' ||
+          err.response.data.detail === 'The CSRF token has expired.'
+        ) {
+          dispatch(toggleCsrfState());
+          dispatch(resetEditedTask());
+          navigate('/');
+        }
+      },
+    }
+  );
+
+  const deleteTaskMutation = useMutation((id: string) =>
+    axios.delete(`${process.env.REACT_APP_API_URL}/todo/${id}`, {
+      withCredentials: true,
+    })
+  );
+
   return;
 };
