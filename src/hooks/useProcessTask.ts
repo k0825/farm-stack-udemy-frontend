@@ -3,6 +3,10 @@ import { useAppSelector } from '../app/hooks';
 import { selectTask } from '../slices/appSlices';
 import { useMutateTask } from './useMutateTask';
 
+interface useProcessTaskType {
+  processTask: (e: FormEvent<HTMLFormElement>) => void;
+}
+
 export const useProcessTask = () => {
   const editedTask = useAppSelector(selectTask);
   const { createTaskMutation, updateTaskMutation } = useMutateTask();
@@ -16,7 +20,6 @@ export const useProcessTask = () => {
     } else {
       updateTaskMutation.mutate(editedTask);
     }
-
-    return { processTask };
   };
+  return { processTask };
 };
