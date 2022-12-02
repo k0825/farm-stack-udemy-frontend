@@ -7,7 +7,7 @@ interface useProcessTaskType {
   processTask: (e: FormEvent<HTMLFormElement>) => void;
 }
 
-export const useProcessTask = () => {
+export const useProcessTask = (): useProcessTaskType => {
   const editedTask = useAppSelector(selectTask);
   const { createTaskMutation, updateTaskMutation } = useMutateTask();
   const processTask = (e: FormEvent<HTMLFormElement>) => {
