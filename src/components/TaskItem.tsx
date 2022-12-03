@@ -12,7 +12,7 @@ export const TaskItem = memo(
     return (
       <li>
         <span className="font-bold cursor-pointer">{title}</span>
-        <div className="flex float-light ml-20">
+        <div className="flex float-right ml-20">
           <PencilSquareIcon
             className="h-5 w-5 mx-1 text-blue-500 cursor-pointer"
             onClick={() => {

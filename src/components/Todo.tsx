@@ -45,7 +45,9 @@ export const Todo = () => {
           placeholder="description ?"
           type="description"
           onChange={(e) =>
-            dispatch(setEditedTask({ ...editedTask, title: e.target.value }))
+            dispatch(
+              setEditedTask({ ...editedTask, description: e.target.value })
+            )
           }
           value={editedTask.description}
         />
