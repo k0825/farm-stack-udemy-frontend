@@ -2,22 +2,30 @@ import {
   ArrowRightOnRectangleIcon,
   ShieldCheckIcon,
 } from '@heroicons/react/24/solid';
+import { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { useProcessAuth } from '../hooks/useProcessAuth';
 import { useProcessTask } from '../hooks/useProcessTask';
+import { useQuerySingleTask } from '../hooks/useQuerySingleTask';
 import { useQueryTasks } from '../hooks/useQueryTasks';
 import { useQueryUser } from '../hooks/useQueryUser';
 import { selectTask, setEditedTask } from '../slices/appSlices';
 import { TaskItem } from './TaskItem';
 
 export const Todo = () => {
+  const [id, setId] = useState('');
   const { logout } = useProcessAuth();
-
   const { data: dataUser } = useQueryUser();
   const { data: dataTasks, isLoading: isLoadingTasks } = useQueryTasks();
+  const { data: dataSingleTask, isLoading: isLoadingTask } =
+    useQuerySingleTask(id);
   const { processTask } = useProcessTask();
   const dispatch = useAppDispatch();
   const editedTask = useAppSelector(selectTask);
+
+  const handleTaskClick = (value: string) => {
+    setId(value);
+  };
 
   return (
     <div className="flex justify-center items-center flex-col min-h-screen text-gray-600 font-mono">
@@ -68,10 +76,15 @@ export const Todo = () => {
               id={task.id}
               title={task.title}
               description={task.description}
+              onTaskClick={handleTaskClick}
             />
           ))}
         </ul>
       )}
+      <h2 className="mt-3 font-bold">Selected Task</h2>
+      {isLoadingTask && <p>Loading...</p>}
+      <p className="my-1 text-blue-500 text-sm">{dataSingleTask?.title}</p>
+      <p className="text-blue-500 text-sm">{dataSingleTask?.description}</p>
     </div>
   );
 };
